@@ -42,14 +42,16 @@ class CountryCodesPlugin : public flutter::Plugin {
       flutter::EncodableList locale_info{
         flutter::EncodableValue(GetSystemLanguage()),
         flutter::EncodableValue(GetSystemRegion()),
-        flutter::EncodableValue(GetLocalizedCountryNames(locale_tag))
+        flutter::EncodableValue(GetLocalizedCountryNames())
       };
       
       result->Success(flutter::EncodableValue(locale_info));
     } else if (method_call.method_name() == "getRegion") {
-      result->Success(flutter::EncodableValue(GetSystemRegion()));
+      std::string region = GetSystemRegion();
+      result->Success(flutter::EncodableValue(region));
     } else if (method_call.method_name() == "getLanguage") {
-      result->Success(flutter::EncodableValue(GetSystemLanguage()));
+      std::string language = GetSystemLanguage();
+      result->Success(flutter::EncodableValue(language));
     } else {
       result->NotImplemented();
     }
@@ -57,53 +59,57 @@ class CountryCodesPlugin : public flutter::Plugin {
 
   std::string GetSystemLocale() {
     wchar_t locale_name[LOCALE_NAME_MAX_LENGTH];
-    int result = GetUserDefaultLocaleName(locale_name, LOCALE_NAME_MAX_LENGTH);
-    return WideToUtf8(locale_name);
+    if (GetUserDefaultLocaleName(locale_name, LOCALE_NAME_MAX_LENGTH)) {
+      return WideToUtf8(locale_name);
+    }
+    return "en-US"; // fallback
   }
 
   std::string GetSystemLanguage() {
     wchar_t language[LOCALE_NAME_MAX_LENGTH];
-    int result = GetUserDefaultLocaleName(language, LOCALE_NAME_MAX_LENGTH);
-    std::wstring wide_lang(language);
-    size_t separator = wide_lang.find(L'-');
-    if (separator != std::wstring::npos) {
-      wide_lang = wide_lang.substr(0, separator);
+    if (GetUserDefaultLocaleName(language, LOCALE_NAME_MAX_LENGTH)) {
+      std::wstring wide_lang(language);
+      size_t separator = wide_lang.find(L'-');
+      if (separator != std::wstring::npos) {
+        wide_lang = wide_lang.substr(0, separator);
+      }
+      return WideToUtf8(wide_lang.c_str());
     }
-    return WideToUtf8(wide_lang.c_str());
+    return "en"; // fallback
   }
 
   std::string GetSystemRegion() {
-    wchar_t region[LOCALE_NAME_MAX_LENGTH];
-    int result = GetUserDefaultGeoName(region, LOCALE_NAME_MAX_LENGTH);
-    return WideToUtf8(region);
+    wchar_t region[3];
+    if (GetUserDefaultGeoName(region, 3)) {
+      return WideToUtf8(region);
+    }
+    return "US"; // fallback
   }
 
-  flutter::EncodableMap GetLocalizedCountryNames(const std::string& locale_tag) {
-    flutter::EncodableMap country_names;
-    wchar_t buffer[LOCALE_NAME_MAX_LENGTH];
+  // Callback function for EnumSystemGeoNames
+  static BOOL CALLBACK EnumGeoNamesProc(LPWSTR geoName, LPARAM param) {
+    auto* country_names = reinterpret_cast<flutter::EncodableMap*>(param);
     
-    // Convert locale_tag to wide string
-    std::wstring wide_locale = Utf8ToWide(locale_tag);
-    
-    // Get all geographic regions
-    EnumSystemGeoID(GEOCLASS_NATION, 0, [](GEOID geoId, LPARAM param) -> BOOL {
-      auto map_ptr = reinterpret_cast<flutter::EncodableMap*>(param);
-      wchar_t country_code[3];
-      wchar_t country_name[LOCALE_NAME_MAX_LENGTH];
+    wchar_t country_name[LOCALE_NAME_MAX_LENGTH];
+    if (GetGeoInfoW(geoName, GEO_FRIENDLYNAME, country_name, LOCALE_NAME_MAX_LENGTH, 0)) {
+      std::string utf8_code = WideToUtf8(geoName);
+      std::string utf8_name = WideToUtf8(country_name);
       
-      if (GetGeoInfoW(geoId, GEO_ISO2, country_code, 3, 0) &&
-          GetGeoInfoW(geoId, GEO_FRIENDLYNAME, country_name, LOCALE_NAME_MAX_LENGTH, 0)) {
-        
-        std::string utf8_code = WideToUtf8(country_code);
-        std::string utf8_name = WideToUtf8(country_name);
-        
-        map_ptr->insert({
-          flutter::EncodableValue(utf8_code),
-          flutter::EncodableValue(utf8_name)
-        });
-      }
-      return TRUE;
-    }, reinterpret_cast<LPARAM>(&country_names));
+      country_names->insert({
+        flutter::EncodableValue(utf8_code),
+        flutter::EncodableValue(utf8_name)
+      });
+    }
+    return TRUE;
+  }
+
+  flutter::EncodableMap GetLocalizedCountryNames() {
+    flutter::EncodableMap country_names;
+    
+    // Enumerate all geographical names
+    EnumSystemGeoNames(GEOCLASS_NATION, 
+                      EnumGeoNamesProc, 
+                      reinterpret_cast<LPARAM>(&country_names));
 
     return country_names;
   }
@@ -118,17 +124,6 @@ class CountryCodesPlugin : public flutter::Plugin {
     std::string utf8_str(size - 1, 0);
     WideCharToMultiByte(CP_UTF8, 0, wide_str, -1, &utf8_str[0], size, nullptr, nullptr);
     return utf8_str;
-  }
-
-  static std::wstring Utf8ToWide(const std::string& utf8_str) {
-    if (utf8_str.empty()) return std::wstring();
-    
-    int size = MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, nullptr, 0);
-    if (size <= 0) return std::wstring();
-    
-    std::wstring wide_str(size - 1, 0);
-    MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, &wide_str[0], size);
-    return wide_str;
   }
 };
 
