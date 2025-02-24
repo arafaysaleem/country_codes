@@ -25,3 +25,5 @@ flutter:
         pluginClass: CountryCodesPlugin
       macos:
         pluginClass: CountryCodesPlugin
+      windows:
+        pluginClass: CountryCodesPluginCApi
