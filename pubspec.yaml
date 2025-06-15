@@ -1,6 +1,8 @@
 name: country_codes
-description: Country codes is an helper package that provides country details given a particular localization, such as dial codes, ISO 3166 codes (alpha-2, alpha-3) and country names.
-version: 3.3.0
+description: Country codes is an helper package that provides country details
+  given a particular localization, such as dial codes, ISO 3166 codes (alpha-2,
+  alpha-3) and country names.
+version: 3.4.0
 homepage: https://github.com/miguelpruivo/country_codes
 
 environment:
@@ -9,9 +11,9 @@ environment:
 
 dependencies:
   collection: ^1.19.1
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
-  
 
 dev_dependencies:
   flutter_test:

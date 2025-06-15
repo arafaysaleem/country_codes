@@ -1,4 +1,6 @@
-class CountryModel {
+import 'package:equatable/equatable.dart';
+
+class CountryModel extends Equatable {
   /// Dial code represents a global phone prefix for the region
   /// Example: `+1`, `+351`
   final String dialCode;
@@ -30,6 +32,16 @@ class CountryModel {
   /// IT : Italy
   /// DE : Germany
   final String? localizedName;
+
+  @override
+  List<Object?> get props => [
+        dialCode,
+        alpha2Code,
+        alpha3Code,
+        countryCode,
+        name,
+        localizedName,
+      ];
 
   const CountryModel({
     required this.dialCode,
