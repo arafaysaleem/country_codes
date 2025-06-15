@@ -9,9 +9,7 @@ import 'country_model.codegen.dart';
 
 class CountryCodes {
   static const MethodChannel _channel = const MethodChannel('country_codes');
-  static late Map<String, CountryModel> countriesMap = countryDetailsMap.map(
-    (key, value) => MapEntry(key, CountryModel.fromJson(value)),
-  );
+  static late var countriesMap = <String, CountryModel>{};
 
   /// Inits the underlying plugin channel and fetch current's device locale to be ready
   /// to use synchronously when required.
@@ -44,12 +42,21 @@ class CountryCodes {
       localizedNames.addAll(locale[2] as Map<String, String>);
     }
 
-    countriesMap = countryDetailsMap.map(
-      (key, value) => MapEntry(
-        key,
-        CountryModel.fromJson(value, localizedNames[key]),
-      ),
-    );
+    if (countriesMap.isNotEmpty) {
+      countriesMap = countriesMap.map(
+        (key, value) => MapEntry(
+          key,
+          value.copyWith(localizedName: localizedNames[key]),
+        ),
+      );
+    } else {
+      countriesMap = countryDetailsMap.map(
+        (key, value) => MapEntry(
+          key,
+          CountryModel.fromJson(value, localizedNames[key]),
+        ),
+      );
+    }
   }
 
   static final List<CountryModel> countries = countriesMap.values.toList();
