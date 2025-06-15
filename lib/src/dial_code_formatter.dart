@@ -1,5 +1,5 @@
-import 'package:country_codes/country_codes.dart';
 import 'package:flutter/services.dart';
+import './country_codes.dart';
 
 /// A formatter that dynamically adds the `dialCode` for the given [alpha2Code], 
 /// [alpha3Code], [dialCode], [countryCode] as a prefix of the input text.
