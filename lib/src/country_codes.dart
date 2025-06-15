@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'country_constants.dart';
-import 'country_model.codegen.dart';
+import 'country_model.dart';
 
 class CountryCodes {
   static const MethodChannel _channel = const MethodChannel('country_codes');
