@@ -9,20 +9,22 @@ import 'country_model.dart';
 
 class CountryCodes {
   static const MethodChannel _channel = const MethodChannel('country_codes');
-  static late var countriesMap = <String, CountryModel>{};
+  static late var countriesMap = countryDetailsMap.map(
+    (key, value) => MapEntry(key, CountryModel.fromJson(value)),
+  );
 
   /// Inits the underlying plugin channel and fetch current's device locale to be ready
   /// to use synchronously when required.
   ///
   /// If you never plan to provide a `locale` directly, you must call and await this
-  /// by calling `await CountrycountryDetailsMap.init();` before accessing any other method.
+  /// by calling `await CountryCodes.initLocalized();` before accessing any other method.
   ///
   /// Optionally, you may want to provide your [appLocale] to access localized
   /// country name (eg. if your app is in English, display Italy instead of Italia).
   ///
   /// Example:
   /// ```dart
-  /// CountrycountryDetailsMap.init(Localizations.localeOf(context))
+  /// CountryCodes.initLocalized(Localizations.localeOf(context))
   /// ```
   /// This will default to device's language if none is provided.
   static Future<void> initLocalized([Locale? appLocale]) async {
