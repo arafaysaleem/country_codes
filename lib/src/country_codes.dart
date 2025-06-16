@@ -41,7 +41,7 @@ class CountryCodes {
         countryCode = subRegionToCountryCode[countryCode] ?? countryCode;
       }
 
-      localizedNames.addAll(locale[2] as Map<String, String>);
+      localizedNames.addAll(locale[2]);
     }
 
     if (countriesMap.isNotEmpty) {
