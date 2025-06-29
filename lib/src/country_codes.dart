@@ -9,7 +9,7 @@ import 'country_model.dart';
 
 class CountryCodes {
   static const MethodChannel _channel = const MethodChannel('country_codes');
-  static late var countriesMap = countryDetailsMap.map(
+  static late var countriesMap = kAlpha2ToCountryMap.map(
     (key, value) => MapEntry(key, CountryModel.fromJson(value)),
   );
 
@@ -37,7 +37,7 @@ class CountryCodes {
     if (locale != null && locale.length >= 2) {
       String countryCode = locale[1];
 
-      if (!countryDetailsMap.containsKey(countryCode)) {
+      if (!kAlpha2ToCountryMap.containsKey(countryCode)) {
         countryCode = subRegionToCountryCode[countryCode] ?? countryCode;
       }
 
@@ -52,7 +52,7 @@ class CountryCodes {
         ),
       );
     } else {
-      countriesMap = countryDetailsMap.map(
+      countriesMap = kAlpha2ToCountryMap.map(
         (key, value) => MapEntry(
           key,
           CountryModel.fromJson(value, localizedNames[key]),
