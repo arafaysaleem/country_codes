@@ -61,8 +61,8 @@ class CountryCodes {
     }
   }
 
-  static get _countriesIterable => countriesMap.values;
-  static get List<CountryModel> countries => _countriesIterable.toList();
+  static Iterable<CountryModel> get _countriesIterable => countriesMap.values;
+  static List<CountryModel> get countries => _countriesIterable.toList();
 
   static CountryModel? getByAlpha2(String alpha2Code) =>
       countriesMap[alpha2Code];
