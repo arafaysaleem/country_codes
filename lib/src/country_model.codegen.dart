@@ -96,6 +96,7 @@ class CountryModel extends Equatable {
   bool containsString(String query) {
     final lowerQuery = query.toLowerCase();
     return localizedOrName.toLowerCase().contains(lowerQuery) ||
+        name.toLowerCase().contains(lowerQuery) ||
         alpha3Code.toLowerCase().contains(lowerQuery) ||
         countryCode.toLowerCase().contains(lowerQuery) ||
         dialCode.toLowerCase().contains(lowerQuery);
