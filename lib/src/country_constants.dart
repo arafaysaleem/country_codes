@@ -16,7 +16,7 @@ const Map<String, String> subRegionToCountryCode = {
   "ZR": "CD", // Zaire → Democratic Republic of the Congo
 };
 
-const countryDetailsMap = <String, Map<String, String>>{
+const kAlpha2ToCountryMap = <String, Map<String, String>>{
   'AF': {
     'name': 'Afghanistan',
     'alpha2_code': 'AF',
