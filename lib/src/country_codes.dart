@@ -6,9 +6,9 @@ import 'package:flutter/widgets.dart';
 
 import 'country_constants.dart';
 import 'country_model.dart';
+import 'method_channel.dart';
 
 class CountryCodes {
-  static const MethodChannel _channel = const MethodChannel('country_codes');
   static late var countriesMap = kAlpha2ToCountryMap.map(
     (key, value) => MapEntry(key, CountryModel.fromJson(value)),
   );
@@ -29,11 +29,9 @@ class CountryCodes {
   /// This will default to device's language if none is provided.
   static Future<void> initLocalized([Locale? appLocale]) async {
     Map<String, String> localizedNames = {};
-    final res = await _channel.invokeMethod(
-      'getLocale',
+    final List<dynamic>? locale = await CountryCodesMethodChannel.getLocale(
       appLocale?.toLanguageTag(),
     );
-    final List<dynamic>? locale = List<dynamic>.from(res);
     if (locale != null && locale.length >= 2) {
       String countryCode = locale[1];
 

@@ -12,8 +12,9 @@
 
 Country codes package provides an easy to way to access country codes based on a provided `Locale`.
 
+
 # Usage
-There are two main ways to use this package.
+There are two main ways to use this package: country and language support.
 
 ### 1. Default by using device region
 This will allow you to fetch the region of the underlying platform and display the data accordingly. Very handy if you use along with the `DialCodeFormatter` to provide integration with dial codes formatter, on phone `TextFormField`s in a `Form`, for example.
@@ -43,6 +44,48 @@ print(details.alpha2Code); // Displays alpha2Code, displays PT.
 print(details.dialCode); // Displays the dial code for PT, +351.
 print(details.name); // Displays the extended name, Portugal.
 ```
+
+
+# Language Support
+
+The package now provides comprehensive language localization and lookup, including native platform integration for localized language names and flag association via primary country.
+
+## 1. Initialize Localized Languages
+```dart
+// Optionally provide a Locale for app language, otherwise uses device locale
+await LanguageCodes.initLanguagesLocalized(Localizations.localeOf(context));
+```
+
+## 2. Access Language Data
+```dart
+final allLanguages = LanguageCodes.languages;
+final english = LanguageCodes.getLanguageByISO639_1('en');
+final french = LanguageCodes.getLanguageByISO639_2('fra');
+final byName = LanguageCodes.getLanguageByName('Spanish');
+final byLocalized = LanguageCodes.getLanguageByLocalizedName('Deutsch');
+final flagCountry = english?.primaryCountry; // For flag display
+```
+
+## 3. Display with Flags
+Each `LanguageModel` links to a primary country for flag display:
+```dart
+final flagCountry = language.primaryCountry;
+final flagEmoji = flagCountry?.flagEmoji;
+```
+
+## 4. API Reference
+- `LanguageCodes.languages`: List of all supported languages
+- `LanguageCodes.getLanguageByISO639_1(String)`
+- `LanguageCodes.getLanguageByISO639_2(String)`
+- `LanguageCodes.getLanguageByName(String)`
+- `LanguageCodes.getLanguageByLocalizedName(String)`
+- `LanguageCodes.getLanguageEnglishNames()`
+- `LanguageCodes.getLocalizedNames()`
+- `LanguageCodes.getISO639_1Codes()`
+- `LanguageCodes.getISO639_2Codes()`
+- `LanguageCodes.getPrimaryCountryCodes()`
+
+See API docs in code for details on each method and field.
 
 # Formatters
 ### `DialCodeFormatter`

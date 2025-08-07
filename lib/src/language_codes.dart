@@ -1,0 +1,76 @@
+import 'dart:async';
+import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'language_constants.dart';
+import 'language_model.dart';
+import 'method_channel.dart';
+
+/// LanguageCodes provides language localization and lookup, mirroring CountryCodes.
+class LanguageCodes {
+  static late Map<String, LanguageModel> languagesMap = kLanguageCodeToLanguageMap.map(
+    (key, value) => MapEntry(key, LanguageModel.fromMap(value)),
+  );
+
+  /// Initializes localized language names from the platform, using the given [appLocale] if provided.
+  static Future<void> initLanguagesLocalized([Locale? appLocale]) async {
+    Map<String, String> localizedNames = {};
+    final List<dynamic>? locale = await CountryCodesMethodChannel.getLanguageLocale(
+      appLocale?.toLanguageTag(),
+    );
+    if (locale != null && locale.length >= 3) {
+      localizedNames.addAll(Map<String, String>.from(locale[2]));
+    }
+    languagesMap = languagesMap.map(
+      (key, value) => MapEntry(
+        key,
+        value.copyWith(localizedName: localizedNames[key.toUpperCase()]),
+      ),
+    );
+  }
+
+  /// Initializes the language map with English names only.
+  static void initLanguages() {
+    languagesMap = kLanguageCodeToLanguageMap.map(
+      (key, value) => MapEntry(key, LanguageModel.fromMap(value)),
+    );
+  }
+
+  /// Returns all supported languages as a list.
+  static List<LanguageModel> get languages => languagesMap.values.toList();
+
+  /// Returns a language by ISO 639-1 code.
+  static LanguageModel? getLanguageByISO639_1(String iso639_1) =>
+      languagesMap[iso639_1];
+
+  /// Returns a language by ISO 639-2 code.
+  static LanguageModel? getLanguageByISO639_2(String iso639_2) =>
+      languagesMap.values.firstWhereOrNull((e) => e.iso639_2 == iso639_2);
+
+  /// Returns a language by English name.
+  static LanguageModel? getLanguageByName(String name) =>
+      languagesMap.values.firstWhereOrNull((e) => e.name == name);
+
+  /// Returns a language by localized name.
+  static LanguageModel? getLanguageByLocalizedName(String localizedName) =>
+      languagesMap.values.firstWhereOrNull((e) => e.localizedOrName == localizedName);
+
+  /// Returns all language English names.
+  static List<String> getLanguageEnglishNames() =>
+      languagesMap.values.map((e) => e.name).toList();
+
+  /// Returns all localized language names.
+  static List<String> getLocalizedNames() =>
+      languagesMap.values.map((e) => e.localizedOrName).toList();
+
+  /// Returns all ISO 639-1 codes.
+  static List<String> getISO639_1Codes() => languagesMap.keys.toList();
+
+  /// Returns all ISO 639-2 codes.
+  static List<String> getISO639_2Codes() =>
+      languagesMap.values.map((e) => e.iso639_2).toList();
+
+  /// Returns all primary country codes for languages.
+  static List<String> getPrimaryCountryCodes() =>
+      languagesMap.values.map((e) => e.countryCode).toList();
+}
