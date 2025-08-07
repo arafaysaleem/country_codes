@@ -22,6 +22,13 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
         "getLocale" -> result.success(listOf(Locale.getDefault().language, Locale.getDefault().country, getLocalizedCountryNames(call.arguments as String?)))
         "getRegion" -> result.success(Locale.getDefault().country)
         "getLanguage" -> result.success(Locale.getDefault().language)
+        "getLanguageLocale" -> {
+            val localeTag = call.arguments as? String
+            val languageNames = getLocalizedLanguageNames(localeTag)
+            val language = Locale.getDefault().language
+            val region = Locale.getDefault().country
+            result.success(listOf(language, region, languageNames))
+        }
         else -> result.notImplemented()
     }
   }
@@ -37,6 +44,19 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
       localizedCountries[countryCode.toUpperCase()] = countryName ?: "";
     }
     return localizedCountries
+  }
+
+  private fun getLocalizedLanguageNames(localeTag: String?): HashMap<String, String> {
+    val localizedLanguages = HashMap<String, String>()
+    val deviceLanguage = Locale.getDefault().toLanguageTag()
+    val targetLocale = Locale.forLanguageTag(localeTag ?: deviceLanguage)
+    val availableLanguages = Locale.getISOLanguages()
+    for (languageCode in availableLanguages) {
+        val locale = Locale(languageCode)
+        val languageName = locale.getDisplayLanguage(targetLocale)
+        localizedLanguages[languageCode.uppercase()] = languageName ?: ""
+    }
+    return localizedLanguages
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
