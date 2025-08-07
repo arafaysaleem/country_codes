@@ -11,9 +11,15 @@ import io.flutter.plugin.common.MethodChannel.Result
 
 /** CountryCodesPlugin */
 public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
+  /// The MethodChannel that will the communication between Flutter and native Android
+  ///
+  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+  /// when the Flutter Engine is detached from the Activity
+  private lateinit var channel : MethodChannel
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "country_codes")
-    channel.setMethodCallHandler(CountryCodesPlugin());
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "country_codes")
+    channel.setMethodCallHandler(this)
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -39,7 +45,7 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
     for (countryCode in Locale.getISOCountries()) {
       val locale = Locale(localeTag ?: deviceCountry,countryCode)
       var countryName: String? = locale.getDisplayCountry(Locale.forLanguageTag(localeTag ?: deviceCountry))
-      localizedCountries[countryCode.toUpperCase()] = countryName ?: "";
+      localizedCountries[countryCode.uppercase()] = countryName ?: "";
     }
     return localizedCountries
   }
@@ -58,5 +64,6 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
   }
 }

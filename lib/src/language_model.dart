@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'country_constants.dart';
+import 'country_codes.dart';
 import 'country_model.dart';
 
 /// Model representing a language, including codes, names, and localization.

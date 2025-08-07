@@ -91,11 +91,8 @@ const Map<String, Map<String, String>> kLanguageCodeToLanguageMap = {
   'mg': {'name': 'Malagasy', 'iso639_1': 'mg', 'iso639_2': 'mlg', 'country_code': 'mg_MG'},
   'rw': {'name': 'Kinyarwanda', 'iso639_1': 'rw', 'iso639_2': 'kin', 'country_code': 'rw_RW'},
   'ha': {'name': 'Hausa', 'iso639_1': 'ha', 'iso639_2': 'hau', 'country_code': 'ha_NG'},
-  'yo': {'name': 'Yoruba', 'iso639_1': 'yo', 'iso639_2': 'yor', 'country_code': 'yo_NG'},
-  'ig': {'name': 'Igbo', 'iso639_1': 'ig', 'iso639_2': 'ibo', 'country_code': 'ig_NG'},
   'om': {'name': 'Oromo', 'iso639_1': 'om', 'iso639_2': 'orm', 'country_code': 'om_ET'},
   'ti': {'name': 'Tigrinya', 'iso639_1': 'ti', 'iso639_2': 'tir', 'country_code': 'ti_ER'},
-  'so': {'name': 'Somali', 'iso639_1': 'so', 'iso639_2': 'som', 'country_code': 'so_SO'},
   'sn': {'name': 'Shona', 'iso639_1': 'sn', 'iso639_2': 'sna', 'country_code': 'sn_ZW'},
   'ny': {'name': 'Chichewa', 'iso639_1': 'ny', 'iso639_2': 'nya', 'country_code': 'ny_MW'},
   'ts': {'name': 'Tsonga', 'iso639_1': 'ts', 'iso639_2': 'tso', 'country_code': 'ts_ZA'},
@@ -106,7 +103,6 @@ const Map<String, Map<String, String>> kLanguageCodeToLanguageMap = {
   'tn': {'name': 'Tswana', 'iso639_1': 'tn', 'iso639_2': 'tsn', 'country_code': 'tn_BW'},
   'kg': {'name': 'Kongo', 'iso639_1': 'kg', 'iso639_2': 'kon', 'country_code': 'kg_CD'},
   'ln': {'name': 'Lingala', 'iso639_1': 'ln', 'iso639_2': 'lin', 'country_code': 'ln_CD'},
-  'rw': {'name': 'Kinyarwanda', 'iso639_1': 'rw', 'iso639_2': 'kin', 'country_code': 'rw_RW'},
   'sg': {'name': 'Sango', 'iso639_1': 'sg', 'iso639_2': 'sag', 'country_code': 'sg_CF'},
   'dz': {'name': 'Dzongkha', 'iso639_1': 'dz', 'iso639_2': 'dzo', 'country_code': 'dz_BT'},
   'bo': {'name': 'Tibetan', 'iso639_1': 'bo', 'iso639_2': 'bod', 'country_code': 'bo_CN'},
@@ -120,7 +116,4 @@ const Map<String, Map<String, String>> kLanguageCodeToLanguageMap = {
   'as': {'name': 'Assamese', 'iso639_1': 'as', 'iso639_2': 'asm', 'country_code': 'as_IN'},
   'or': {'name': 'Odia', 'iso639_1': 'or', 'iso639_2': 'ori', 'country_code': 'or_IN'},
   'sd': {'name': 'Sindhi', 'iso639_1': 'sd', 'iso639_2': 'snd', 'country_code': 'sd_PK'},
-  'si': {'name': 'Sinhala', 'iso639_1': 'si', 'iso639_2': 'sin', 'country_code': 'si_LK'},
-  'my': {'name': 'Burmese', 'iso639_1': 'my', 'iso639_2': 'mya', 'country_code': 'my_MM'},
-  // ...add more as needed for ~100 entries
 };
