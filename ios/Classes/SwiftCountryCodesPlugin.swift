@@ -27,6 +27,16 @@ public class SwiftCountryCodesPlugin: NSObject, FlutterPlugin {
         let region = Locale.current.regionCode ?? "US"
         result([language, region, languageNames])
         break
+    case "sortByLocalized":
+        if let args = call.arguments as? [String: Any],
+           let names = args["names"] as? [String],
+           let ascending = args["ascending"] as? Bool {
+            let localeTag = args["localeTag"] as? String
+            result(sortByLocalized(names: names, localeTag: localeTag, ascending: ascending))
+        } else {
+            result([])
+        }
+        break
     default:
         result(FlutterMethodNotImplemented);
     }
@@ -51,13 +61,17 @@ public class SwiftCountryCodesPlugin: NSObject, FlutterPlugin {
         return localizedLanguages
     }
 
+    func sortByLocalized(names: [String], localeTag: String?, ascending: Bool) -> [String] {
+        let locale = localeTag != nil ? Locale(identifier: localeTag!) : Locale.current
+        let sorted = names.sorted { $0.compare($1, locale: locale) == .orderedAscending }
+        return ascending ? sorted : sorted.reversed()
+    }
+}
+
 // Extension to remove duplicates
 extension Sequence where Iterator.Element: Hashable {
     func removingDuplicates() -> [Iterator.Element] {
         var seen: Set<Iterator.Element> = []
         return filter { seen.insert($0).inserted }
     }
-}
-    
- 
 }

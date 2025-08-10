@@ -35,6 +35,13 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
             val region = Locale.getDefault().country
             result.success(listOf(language, region, languageNames))
         }
+        "sortByLocalized" -> {
+            val args = call.arguments as? Map<*, *>
+            val names = (args?.get("names") as? List<*>)?.mapNotNull { it?.toString() } ?: emptyList()
+            val localeTag = args?.get("localeTag") as? String
+            val ascending = args?.get("ascending") as? Boolean ?: true
+            result.success(sortByLocalized(names, localeTag, ascending))
+        }
         else -> result.notImplemented()
     }
   }
@@ -61,6 +68,13 @@ public class CountryCodesPlugin: FlutterPlugin, MethodCallHandler {
         localizedLanguages[languageCode.uppercase()] = languageName ?: ""
     }
     return localizedLanguages
+  }
+
+  private fun sortByLocalized(names: List<String>, localeTag: String?, ascending: Boolean): List<String> {
+    val locale = if (localeTag != null) Locale.forLanguageTag(localeTag) else Locale.getDefault()
+    val collator = java.text.Collator.getInstance(locale)
+    val sorted = names.sortedWith(collator)
+    return if (ascending) sorted else sorted.reversed()
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {

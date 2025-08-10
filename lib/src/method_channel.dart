@@ -25,4 +25,18 @@ class CountryCodesMethodChannel {
   static Future<String?> getLanguage() async {
     return await _channel.invokeMethod('getLanguage');
   }
+
+  /// Sorts a list of names using native locale-aware sorting.
+  static Future<List<String>> sortByLocalized(
+    List<String> names, String? localeTag, bool ascending) async {
+    final sorted = await _channel.invokeMethod<List<dynamic>>(
+      'sortByLocalized',
+      {
+        'names': names,
+        'localeTag': localeTag,
+        'ascending': ascending,
+      },
+    );
+    return sorted?.map((e) => e.toString()).toList() ?? [];
+  }
 }

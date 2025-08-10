@@ -103,4 +103,15 @@ class CountryCodes {
   static List<CountryModel> getCountryListByAlpha2Codes(
           List<String> alpha2Codes) =>
       alpha2Codes.map((e) => countriesMap[e]!).toList();
+
+  /// Returns a new list of CountryModel sorted by localized name using native locale-aware sorting.
+  static Future<List<CountryModel>> sortByLocalized(bool ascending, [Locale? appLocale]) async {
+    final names = countries.map((c) => c.localizedOrName).toList();
+    final sortedNames = await CountryCodesMethodChannel.sortByLocalized(
+      names, appLocale?.toLanguageTag(), ascending);
+    return sortedNames
+        .map((name) => countries.firstWhereOrNull((c) => c.localizedOrName == name))
+        .whereType<CountryModel>()
+        .toList();
+  }
 }

@@ -73,4 +73,15 @@ class LanguageCodes {
   /// Returns all primary country codes for languages.
   static List<String> getPrimaryCountryCodes() =>
       languagesMap.values.map((e) => e.countryCode).toList();
+
+  /// Returns a new list of LanguageModel sorted by localized name using native locale-aware sorting.
+  static Future<List<LanguageModel>> sortByLocalized(bool ascending, [Locale? appLocale]) async {
+    final names = languages.map((l) => l.localizedOrName).toList();
+    final sortedNames = await CountryCodesMethodChannel.sortByLocalized(
+      names, appLocale?.toLanguageTag(), ascending);
+    return sortedNames
+        .map((name) => languages.firstWhereOrNull((l) => l.localizedOrName == name))
+        .whereType<LanguageModel>()
+        .toList();
+  }
 }
