@@ -11,6 +11,7 @@ class LanguageCodes {
   static late Map<String, LanguageModel> languagesMap = kLanguageCodeToLanguageMap.map(
     (key, value) => MapEntry(key, LanguageModel.fromMap(value)),
   );
+  static late List<LanguageModel> _languagesList = languagesMap.values.toList();
 
   /// Initializes localized language names from the platform, using the given [appLocale] if provided.
   static Future<void> initLanguagesLocalized([Locale? appLocale]) async {
@@ -21,23 +22,28 @@ class LanguageCodes {
     if (locale != null && locale.length >= 3) {
       localizedNames.addAll(Map<String, String>.from(locale[2]));
     }
-    languagesMap = languagesMap.map(
-      (key, value) => MapEntry(
-        key,
-        value.copyWith(localizedName: localizedNames[key.toUpperCase()]),
-      ),
-    );
-  }
 
-  /// Initializes the language map with English names only.
-  static void initLanguages() {
-    languagesMap = kLanguageCodeToLanguageMap.map(
-      (key, value) => MapEntry(key, LanguageModel.fromMap(value)),
-    );
+    if (languagesMap.isNotEmpty) {
+      languagesMap = languagesMap.map(
+        (key, value) => MapEntry(
+          key,
+          value.copyWith(localizedName: localizedNames[key.toUpperCase()]),
+        ),
+      );
+    } else {
+      languagesMap = kLanguageCodeToLanguageMap.map(
+        (key, value) => MapEntry(
+          key,
+          LanguageModel.fromMap(value, localizedNames[key.toUpperCase()]),
+        ),
+      );
+    }
+
+    _languagesList = await sortByLocalized(true, appLocale);
   }
 
   /// Returns all supported languages as a list.
-  static List<LanguageModel> get languages => languagesMap.values.toList();
+  static List<LanguageModel> get languages => _languagesList;
 
   /// Returns a language by ISO 639-1 code.
   static LanguageModel? getLanguageByISO639_1(String iso639_1) =>
@@ -76,11 +82,11 @@ class LanguageCodes {
 
   /// Returns a new list of LanguageModel sorted by localized name using native locale-aware sorting.
   static Future<List<LanguageModel>> sortByLocalized(bool ascending, [Locale? appLocale]) async {
-    final names = languages.map((l) => l.localizedOrName).toList();
+    final names = languagesMap.values.map((l) => l.localizedOrName).toList();
     final sortedNames = await CountryCodesMethodChannel.sortByLocalized(
       names, appLocale?.toLanguageTag(), ascending);
     return sortedNames
-        .map((name) => languages.firstWhereOrNull((l) => l.localizedOrName == name))
+        .map((name) => languagesMap.values.firstWhereOrNull((l) => l.localizedOrName == name))
         .whereType<LanguageModel>()
         .toList();
   }

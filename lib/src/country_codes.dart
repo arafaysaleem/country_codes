@@ -13,6 +13,8 @@ class CountryCodes {
     (key, value) => MapEntry(key, CountryModel.fromJson(value)),
   );
 
+  static late List<CountryModel> _countriesList = countriesMap.values.toList();
+
   /// Inits the underlying plugin channel and fetch current's device locale to be ready
   /// to use synchronously when required.
   ///
@@ -57,48 +59,49 @@ class CountryCodes {
         ),
       );
     }
+
+    _countriesList = await sortByLocalized(true, appLocale);
   }
 
-  static Iterable<CountryModel> get _countriesIterable => countriesMap.values;
-  static List<CountryModel> get countries => _countriesIterable.toList();
+  static List<CountryModel> get countries => _countriesList;
 
   static CountryModel? getByAlpha2(String alpha2Code) =>
       countriesMap[alpha2Code];
 
-  static CountryModel? getByAlpha3(String alpha3Code) => _countriesIterable
+  static CountryModel? getByAlpha3(String alpha3Code) => countries
       .firstWhereOrNull((element) => element.alpha3Code == alpha3Code);
 
   static CountryModel? getByCountryCode(String countryCode) =>
-      _countriesIterable
+      countries
           .firstWhereOrNull((element) => element.countryCode == countryCode);
 
-  static CountryModel? getByDialCode(String dialCode) => _countriesIterable
+  static CountryModel? getByDialCode(String dialCode) => countries
       .firstWhereOrNull((element) => element.dialCode == dialCode);
 
   static List<CountryModel> getCountriesByLocalizedName(String localizedName) =>
-      _countriesIterable
+      countries
           .where((element) => element.localizedName == localizedName)
           .toList();
 
   static List<CountryModel> getCountriesByName(String name) =>
-      _countriesIterable.where((element) => element.name == name).toList();
+      countries.where((element) => element.name == name).toList();
 
   static List<String> getCountryEnglishNames() =>
-      _countriesIterable.map((element) => element.name).toList();
+      countries.map((element) => element.name).toList();
 
   static List<String> getLocalizedNames() =>
-      _countriesIterable.map((element) => element.localizedOrName).toList();
+      countries.map((element) => element.localizedOrName).toList();
 
   static List<String> getAlpha2Codes() => countriesMap.keys.toList();
 
   static List<String> getAlpha3Codes() =>
-      _countriesIterable.map((element) => element.alpha3Code).toList();
+      countries.map((element) => element.alpha3Code).toList();
 
   static List<String> getCountryCodes() =>
-      _countriesIterable.map((element) => element.countryCode).toList();
+      countries.map((element) => element.countryCode).toList();
 
   static List<String> getDialCodes() =>
-      _countriesIterable.map((element) => element.dialCode).toList();
+      countries.map((element) => element.dialCode).toList();
 
   static List<CountryModel> getCountryListByAlpha2Codes(
           List<String> alpha2Codes) =>
