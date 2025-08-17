@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:collection/collection.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'language_constants.dart';
 import 'language_model.dart';
@@ -34,7 +33,7 @@ class LanguageCodes {
       languagesMap = kLanguageCodeToLanguageMap.map(
         (key, value) => MapEntry(
           key,
-          LanguageModel.fromMap(value, localizedNames[key.toUpperCase()]),
+          LanguageModel.fromMap(value, localizedName: localizedNames[key.toUpperCase()]),
         ),
       );
     }
